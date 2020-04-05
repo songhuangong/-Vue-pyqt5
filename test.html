@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+	<script language="javascript" src="./qwebchannel.js"></script>
+    <!--    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+	<script src="./vue.js"></script>
+</head>
+<body>
+	<div id="app">
+		<button @click="on_test">{{a}}</button>
+	</div>
+	<script>
+		var vm = new Vue({
+			el: '#app',
+			data:{
+				a : "js调用py，并获取返回值"
+			},
+			created: function () {
+			},
+			methods: {
+			    on_test: function () {
+			      // alert("123")
+				  window.connection.test_str_int("3333", function(return_value){
+					  alert(return_value);
+				  });
+				  window.connection.test_int_str(666, function(return_value){
+				  					  alert(return_value);
+				  });
+			    }
+			}
+		})
+		
+		document.addEventListener("DOMContentLoaded", function () {
+			new QWebChannel(qt.webChannelTransport, function(channel) {
+				window.connection = channel.objects.conn_shared;
+			});
+			// 当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发。
+			// 这样我们就新建一个QWebChannel对象（针对qwebchannel.js里的）。
+			// Web页面可以通过channel.objects属性访问所有已发布的对象，这里对象的id是“conn_shared”。
+			// 我们将其设置成JavaScript的全局变量：window.connection。
+		});
+	</script>
+</body>
+</html>
